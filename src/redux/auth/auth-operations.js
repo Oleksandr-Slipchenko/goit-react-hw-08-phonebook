@@ -2,8 +2,8 @@ import axios from 'axios';
 // import { createAsyncThunk } from '@reduxjs/toolkit';
 import authActions from './auth-actions';
 
-axios.defaults.baseURL = 'https://lpj-tasker.herokuapp.com';
-// axios.defaults.baseURL = 'https://goit-phonebook-api.herokuapp.com';
+// axios.defaults.baseURL = 'https://lpj-tasker.herokuapp.com';
+axios.defaults.baseURL = 'https://goit-phonebook-api.herokuapp.com';
 
 const token = {
   set(token) {
@@ -28,6 +28,7 @@ const register = credentials => async dispatch => {
   try {
     const response = await axios.post('/users/signup', credentials);
 
+    token.set(response.data.token);
     dispatch(authActions.registerSuccess(response.data));
   } catch (error) {
     dispatch(authActions.registerError(error.message));
@@ -52,7 +53,18 @@ const register = credentials => async dispatch => {
  * После успешного логина добавляем токен в HTTP-заголовок
  */
 
-const logIn = credentials => dispatch => {};
+const logIn = credentials => async dispatch => {
+  dispatch(authActions.loginRequest());
+
+  try {
+    const response = await axios.post('/users/login', credentials);
+
+    token.set(response.data.token);
+    dispatch(authActions.loginSuccess(response.data));
+  } catch (error) {
+    dispatch(authActions.loginError(error.message));
+  }
+};
 
 /////////////////////////////////////////
 // const logIn = createAsyncThunk('auth/login', async credentials => {
@@ -72,7 +84,18 @@ const logIn = credentials => dispatch => {};
  * После успешного логаута, удаляем токен из HTTP-заголовка
  */
 
-const logOut = () => dispatch => {};
+const logOut = () => async dispatch => {
+  dispatch(authActions.logoutRequest());
+
+  try {
+    await axios.post('/users/logout');
+
+    token.unset();
+    dispatch(authActions.logoutSuccess());
+  } catch (error) {
+    dispatch(authActions.logoutError(error.message));
+  }
+};
 
 /////////////////////////////////////////
 // const logOut = createAsyncThunk('auth/logout', async () => {
@@ -95,7 +118,27 @@ const logOut = () => dispatch => {};
  * 3. Если токен есть, добавляет его в HTTP-заголовок и выполянем операцию
  */
 
-const getCurrentUser = () => (dispatch, getState) => {};
+const getCurrentUser = () => async (dispatch, getState) => {
+  const {
+    auth: { token: persistedToken },
+  } = getState();
+
+  if (!persistedToken) {
+    return;
+  }
+
+  token.set(persistedToken);
+
+  dispatch(authActions.getCurrentUserRequest());
+
+  try {
+    const response = await axios.get('/users/current');
+
+    dispatch(authActions.getCurrentUserSuccess(response.data));
+  } catch (error) {
+    dispatch(authActions.getCurrentUserError(error.message));
+  }
+};
 
 //////////////////////////////////////////
 // const fetchCurrentUser = createAsyncThunk(
