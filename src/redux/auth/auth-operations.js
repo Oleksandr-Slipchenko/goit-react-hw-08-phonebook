@@ -2,7 +2,6 @@ import axios from 'axios';
 // import { createAsyncThunk } from '@reduxjs/toolkit';
 import authActions from './auth-actions';
 
-// axios.defaults.baseURL = 'https://lpj-tasker.herokuapp.com';
 axios.defaults.baseURL = 'https://goit-phonebook-api.herokuapp.com';
 
 const token = {
@@ -20,8 +19,6 @@ const token = {
  * После успешной регистрации добавляем токен в HTTP-заголовок
  */
 
-/////////////////////////////////
-
 const register = credentials => async dispatch => {
   dispatch(authActions.registerRequest());
 
@@ -34,18 +31,6 @@ const register = credentials => async dispatch => {
     dispatch(authActions.registerError(error.message));
   }
 };
-
-// const register = createAsyncThunk('auth/register', async credentials => {
-//   try {
-//     const { data } = await axios.post('/users/signup', credentials);
-//     token.set(data.token);
-//     return data;
-//   } catch (error) {
-//     // TODO: Добавить обработку ошибки error.message
-//   }
-// });
-
-////////////////////////////////
 
 /*
  * POST @ /users/login
@@ -66,18 +51,6 @@ const logIn = credentials => async dispatch => {
   }
 };
 
-/////////////////////////////////////////
-// const logIn = createAsyncThunk('auth/login', async credentials => {
-//   try {
-//     const { data } = await axios.post('/users/login', credentials);
-//     token.set(data.token);
-//     return data;
-//   } catch (error) {
-//     // TODO: Добавить обработку ошибки error.message
-//   }
-// });
-///////////////////////////////////////
-
 /*
  * POST @ /users/logout
  * headers: Authorization: Bearer token
@@ -96,17 +69,6 @@ const logOut = () => async dispatch => {
     dispatch(authActions.logoutError(error.message));
   }
 };
-
-/////////////////////////////////////////
-// const logOut = createAsyncThunk('auth/logout', async () => {
-//   try {
-//     await axios.post('/users/logout');
-//     token.unset();
-//   } catch (error) {
-//     // TODO: Добавить обработку ошибки error.message
-//   }
-// });
-///////////////////////////////////
 
 /*
  * GET @ /users/current
@@ -140,6 +102,48 @@ const getCurrentUser = () => async (dispatch, getState) => {
   }
 };
 
+const operations = {
+  register,
+  logOut,
+  logIn,
+  getCurrentUser,
+  // fetchCurrentUser,
+};
+export default operations;
+
+// через -- //createAsyncThunk//
+
+// const register = createAsyncThunk('auth/register', async credentials => {
+//   try {
+//     const { data } = await axios.post('/users/signup', credentials);
+//     token.set(data.token);
+//     return data;
+//   } catch (error) {
+//     // CONTACT: Добавить обработку ошибки error.message
+//   }
+// });
+
+/////////////////////////////////////////
+// const logIn = createAsyncThunk('auth/login', async credentials => {
+//   try {
+//     const { data } = await axios.post('/users/login', credentials);
+//     token.set(data.token);
+//     return data;
+//   } catch (error) {
+//     // CONTACT: Добавить обработку ошибки error.message
+//   }
+// });
+///////////////////////////////////////
+
+// const logOut = createAsyncThunk('auth/logout', async () => {
+//   try {
+//     await axios.post('/users/logout');
+//     token.unset();
+//   } catch (error) {
+//     // CONTACT: Добавить обработку ошибки error.message
+//   }
+// });
+
 //////////////////////////////////////////
 // const fetchCurrentUser = createAsyncThunk(
 //   'auth/refresh',
@@ -157,17 +161,10 @@ const getCurrentUser = () => async (dispatch, getState) => {
 //       const { data } = await axios.get('/users/current');
 //       return data;
 //     } catch (error) {
-//       // TODO: Добавить обработку ошибки error.message
+//       // CONTACT: Добавить обработку ошибки error.message
 //     }
 //   },
 // );
 ///////////////////////////////////////
 
-const operations = {
-  register,
-  logOut,
-  logIn,
-  getCurrentUser,
-  // fetchCurrentUser,
-};
-export default operations;
+

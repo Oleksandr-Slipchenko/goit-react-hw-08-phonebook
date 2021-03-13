@@ -1,7 +1,6 @@
+// import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import * as actions from './contacts-actions';
-
-// axios.defaults.baseURL = 'http://localhost:3223';
 
 const fetchContacts = () => async dispatch => {
   dispatch(actions.fetchContactRequest());
@@ -13,11 +12,23 @@ const fetchContacts = () => async dispatch => {
     dispatch(actions.fetchContactError(error.message));
   }
 
+  //  Синхронный запрос   ///
+
   // axios
   //   .get('/contacts')
   //   .then(({ data }) => dispatch(actions.fetchContactSuccess(data)))
   //   .catch(error => dispatch(actions.fetchContactError(error)));
 };
+
+//     Если делать через -- //createAsyncThunk//
+
+// const fetchContactsAsync = createAsyncThunk(
+//   'contacts/fetchContacts',
+//   async () => {
+//     const { data } = await axios.get('/contacts');
+//     return await data;
+//   },
+// );
 
 const addContact = (name, number) => async dispatch => {
   const contact = { name, number };
@@ -30,11 +41,6 @@ const addContact = (name, number) => async dispatch => {
   } catch (error) {
     dispatch(actions.addContactError(error.message));
   }
-
-  // axios
-  //   .post('/contacts', contact)
-  //   .then(({ data }) => dispatch(actions.addContactSuccess(data)))
-  //   .catch(error => dispatch(actions.addContactError(error)));
 };
 
 const removeContact = contactId => async dispatch => {
@@ -46,11 +52,6 @@ const removeContact = contactId => async dispatch => {
   } catch (error) {
     dispatch(actions.removeContactError(error.message));
   }
-
-  // axios
-  //   .delete(`/contacts/${contactId}`)
-  //   .then(() => dispatch(actions.removeContactSuccess(contactId)))
-  //   .catch(error => dispatch(actions.removeContactError(error)));
 };
 
 export default {
